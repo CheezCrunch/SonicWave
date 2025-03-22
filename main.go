@@ -46,20 +46,19 @@ func createDictionary(configFile string) {
 
 	words := strings.Split(string(data), "\n")
 
+	hash := sha256.New()
+	switch config.Algorithm {
+	case "sha512":
+		hash = sha512.New()
+	case "sha1":
+		hash = sha1.New()
+	case "md5":
+		hash = md5.New()
+	case "blake2":
+		hash = crypto.BLAKE2b_256.New()
+	}
+
 	for _, word := range words {
-		hash := sha256.New()
-
-		switch config.Algorithm {
-		case "sha512":
-			hash = sha512.New()
-		case "sha1":
-			hash = sha1.New()
-		case "md5":
-			hash = md5.New()
-		case "blake2":
-			hash = crypto.BLAKE2b_256.New()
-		}
-
 		hash.Write([]byte(word))
 		bytes := hash.Sum(nil)
 		hexData := hex.EncodeToString(bytes)
